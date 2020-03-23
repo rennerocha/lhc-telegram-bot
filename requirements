@@ -3,4 +3,5 @@ ics
 parsel
 peewee
 python-telegram-bot
+pytz
 requests

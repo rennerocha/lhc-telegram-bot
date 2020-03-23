@@ -1,6 +1,7 @@
 import logging
 import random
 from datetime import datetime
+from pytz import timezone
 
 import requests
 from dynaconf import settings
@@ -10,10 +11,10 @@ from models import Status
 logging.basicConfig(level=settings.LOG_LEVEL)
 logger = logging.getLogger("joker")
 
+TIMEZONE = timezone(settings.TIMEZONE)
+
 
 def quem(update, context):
-    logger.info("Command /quem received.")
-
     notify_msg = []
     last_status = Status.select().order_by(Status.date.desc()).first()
 
@@ -55,10 +56,11 @@ def status_check(context):
 
     is_open = state.get("open")
     last_change_timestamp = state.get("lastchange")
-    last_change = datetime.fromtimestamp(last_change_timestamp)
+    last_change = datetime.fromtimestamp(last_change_timestamp).astimezone(TIMEZONE)
+    current_time = datetime.now().astimezone(TIMEZONE)
 
     current_status = Status(
-        is_open=is_open, last_change=last_change, date=datetime.now(),
+        is_open=is_open, last_change=last_change, date=current_time,
     )
 
     if is_open:
