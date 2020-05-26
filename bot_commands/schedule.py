@@ -33,3 +33,32 @@ def quando(update, context):
 def generate_ics(context):
     logger.info("Generating new ICS file.")
     lhc_ics(settings.ICS_LOCATION)
+
+
+def pin_today_event(context):
+    with open(settings.ICS_LOCATION, "r") as ics_file:
+        calendar = Calendar(ics_file.read())
+
+    today_events = list(
+        {
+            event
+            for event in calendar.events
+            if event.begin.date() == datetime.date.today()
+        }
+    )
+    today_event = min(today_events, key=lambda e: e.begin)
+    event = {
+        "title": today_event.name,
+        "date": today_event.begin.strftime("%d/%m/%Y"),
+        "url": today_event.url,
+    }
+    if event:
+        today_event_msg = f"**Hoje** {event['date']} vai rolar \"{event['title']}\". Mais informações em {event['url']}."
+
+        message = context.bot.send_message(
+            settings.LHC_CHAT_ID, text=today_event_msg, parse_mode="Markdown"
+        )
+
+        context.bot.pin_chat_message(
+            message.chat_id, message.message_id, disable_notification=False
+        )

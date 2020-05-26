@@ -24,8 +24,10 @@ def init_bot():
     updater.job_queue.run_repeating(
         schedule.generate_ics, interval=60 * 60 * 24, first=0
     )
+    updater.job_queue.run_repeating(
+        schedule.pin_today_event, interval=60 * 60 * 24, first=datetime.time(5, 0)
+    )
     dispatcher.add_handler(CommandHandler("quando", schedule.quando))
-
     dispatcher.add_handler(CommandHandler("grana", money.grana))
 
     dispatcher.add_handler(pizza.pizza_conversation_handler)
