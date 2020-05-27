@@ -4,7 +4,6 @@ import logging
 from dynaconf import settings
 from ics import Calendar
 
-from models import PinnedMessages
 from utils.ics_calendar import lhc_ics
 
 logging.basicConfig(level=settings.LOG_LEVEL)
