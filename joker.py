@@ -23,7 +23,7 @@ def init_bot():
     dispatcher.add_handler(CommandHandler("status", status.status))
 
     updater.job_queue.run_repeating(
-        schedule.generate_ics, interval=60 * 60 * 24, first=0
+        schedule.generate_ics, interval=60 * 60, first=0
     )
     updater.job_queue.run_repeating(
         schedule.pin_today_event, interval=60 * 60 * 24, first=datetime.time(5, 0)
